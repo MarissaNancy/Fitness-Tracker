@@ -12,8 +12,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.16.3",
-    "mongoose": "^5.3.16",
-    "morgan": "^1.9.1"
+    "express": "^4.17.1",
+    "init": "^0.1.2",
+    "mongoose": "^5.13.2",
+    "morgan": "^1.10.0",
+    "node": "^16.4.0"
   }
 }

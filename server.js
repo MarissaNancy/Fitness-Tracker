@@ -29,8 +29,8 @@ app.get("/stats", function(req, res) {
   res.sendFile(path.join(__dirname, "./public/stats.html"));
 });
 
-
-app.get("/exercise", (req, res) => {
+//this one too
+app.get("/api/workouts", (req, res) => {
   db.Workout.find({})
   .then(dbWorkout => {
       res.json(dbWorkout);
@@ -40,50 +40,61 @@ app.get("/exercise", (req, res) => {
   });
 });
 
-app.put("/exercise/:id", function(req, res) {
-    if (error) {
-      console.log(error);
-    }
-    else {
-    const newExercise = req.body;
-    const exerciseLists = found[0].exercises;
-    exerciseLists.push(newExercise);
-    db.Workout.updateOne(
-      { 
-        _id: mongojs.ObjectId(req.params.id)
+app.put("/api/workouts/:id", ({ params }, res) =>{
+  db.Workout.updateOne(
+    {
+      _id: mongojs.ObjectId(params.id)
+    },
+    {
+      $set: {
+        exercises: exerciseLists
       },
-      {
-        $set : { exercises: exerciseLists }
-      },
-      (error, edited) => {
-        if (error){
-          console.log(error);
-        } else {
-          res.send(edited);
-        }
+    },
+    (error, edited) =>{
+      if (error) {
+        console.log(error);
+        res.send(error);
+      } else {
+        console.log(edited);
+        res.send(edited);
       }
-    )
-  }
+    }
+  )
 });
 
-
-app.post("/exercise", (req, res) => {
-  db.Workout.create({})
-  .then(data => {
-      res.json(data);
+//this works 
+app.post("/api/workouts", ({ body }, res) => {
+  db.Workout.create(body)
+  .then(({_id}) => db.Workout.findOneAndUpdate({}, { $push: { workout: _id } }, { new: true}))
+  .then(dbWorkout => {
+    res.json(dbWorkout);
+  })
+  .catch(err => {
+    res.json(err);
   });
 });
 
-app.get("/workouts/range", (req, res) =>{
-  db.Workout.find({})
-  .then(dbWorkout => {
-    while(dbWorkout.length > 7){
-      let wout = db.Workout.shift()
+//in range
+app.get("/api/workouts", (req, res) => {
+  db.Workout.find({}, (err, result) => {
+    if (err) {
+      res.send(err);
+    } else {
+      res.send(result);
     }
-    res.json(dbWorkout)
   })
-})
+  .limit(7);
+});
 
+app.delete("/api/workouts/:id", (req, res) =>{
+  db.Workout.findOneAndRemove({ _id: req.params.id}, (err) => {
+    if(err){
+      return(err);
+    } else{
+      return res
+    }
+  });
+});
 
 // Start the server
 app.listen(PORT, () => {

@@ -18,4 +18,4 @@ When user can see the combined weight of multiple exercises for the past seven w
 
 
 ## Mockup
-(![ ](./Assets/main1.png))
+(![Here is what the homepage looks like ](./index.png))

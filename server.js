@@ -51,19 +51,14 @@ app.get("/api/workouts", (req, res) => {
 
 app.put("/api/workouts/:id", (req, res) => {
   console.log(req.body)
-  db.Workout.create(req.body)
-  .then((data) => db.Workout.findOneAndUpdate(
+ db.Workout.findOneAndUpdate(
       {_id: req.params.id},
       {
           $push: {
-              exercises: data._id
+              exercises: req.body
           },
-          $inc: {//increments
-              totalDuration: data.duration
-          }
       },
       { new: true })//if new which yes
-  )
   .then(dbWorkout => {
       res.json(dbWorkout)
   })
@@ -86,7 +81,15 @@ app.post("/api/workouts", (req, res) =>{
 
 //in range
 app.get("/api/workouts/range", (req, res) => {
-  db.Workout.find({})
+  db.Workout.aggregate([
+    {
+      $addFields: {
+        totalDuration: { 
+          $sum: "$exercises.duration"
+        }
+      }
+    }
+  ])
   .limit(7)
   .then(newWorkout => {
     res.json(newWorkout);

@@ -15,7 +15,7 @@ app.use(express.json());
 
 app.use(express.static("public"));
 
-mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/workout", { useNewUrlParser: true, useUnifiedTopology: true  });
+mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/workout", { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false,  });
 
 app.get("/", (req, res) => {
   res.send(index.html);
@@ -32,7 +32,15 @@ app.get("/stats", function(req, res) {
 
 //this one too
 app.get("/api/workouts", (req, res) => {
-  db.Workout.find({})
+  db.Workout.aggregate([
+    {
+      $addFields: {
+        totalDuration: { 
+          $sum: "$exercises.duration"
+        }
+      }
+    }
+  ])
   .then(dbWorkout => {
       res.json(dbWorkout);
   })
@@ -65,11 +73,10 @@ app.put("/api/workouts/:id", (req, res) => {
 })
 
 
-//this works 
-
 app.post("/api/workouts", (req, res) =>{
-  db.Workout.create({day: Date.now()})
+  db.Workout.create({})
   .then(newWorkout => {
+    console.log(newWorkout);
     res.json(newWorkout);
   })
   .catch(err => {
@@ -79,25 +86,23 @@ app.post("/api/workouts", (req, res) =>{
 
 //in range
 app.get("/api/workouts/range", (req, res) => {
-  db.Workout.find({}, (err, result) => {
-    if (err) {
-      res.send(err);
-    } else {
-      res.send(result);
-    }
-  })
-  .limit(7);
+  db.Workout.find({})
+  .limit(7)
+  .then(newWorkout => {
+    res.json(newWorkout);
+  }).catch(err => {
+    res.json(err);
+  });
 });
 
-// app.delete("/api/workouts/:id", (req, res) =>{
-//   db.Workout.findOneAndRemove({ _id: req.params.id}, (err) => {
-//     if(err){
-//       return(err);
-//     } else{
-//       return res
-//     }
-//   });
-// });
+app.delete("/api/workouts/:id", (req, res) =>{
+  db.Workout.findByIdAndDelete( req.params.id)
+  .then(deletedWorkout => {
+    res.json(deletedWorkout);
+  }).catch(err => {
+    res.json(err);
+  });
+});
 
 // Start the server
 app.listen(PORT, () => {

@@ -30,7 +30,6 @@ app.get("/stats", function(req, res) {
 });
 
 
-//this one too
 app.get("/api/workouts", (req, res) => {
   db.Workout.aggregate([
     {

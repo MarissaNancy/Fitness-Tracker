@@ -19,8 +19,7 @@ app.use(express.static("public"));
 mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/workout", { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false,  });
 
 app.get("/", (req, res) => {
-  res.send(index.html);
-});
+  res.sendFile(path.join(__dirname, "./public/index.html"))
 
 app.get("/exercise", function(req, res) {
   res.sendFile(path.join(__dirname, "./public/exercise.html"));

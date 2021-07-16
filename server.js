@@ -19,7 +19,8 @@ app.use(express.static("public"));
 mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/workout", { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false,  });
 
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "./public/index.html"))
+  res.sendFile(path.join(__dirname, "./public/index.html"));
+});
 
 app.get("/exercise", function(req, res) {
   res.sendFile(path.join(__dirname, "./public/exercise.html"));
@@ -106,7 +107,6 @@ app.delete("/api/workouts/:id", (req, res) =>{
   });
 });
 
-// Start the server
 app.listen(PORT, () => {
   console.log(`App running on port ${PORT}!`);
 });

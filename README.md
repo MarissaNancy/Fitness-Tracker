@@ -18,4 +18,4 @@ When user can see the combined weight of multiple exercises for the past seven w
 (![Here is what the homepage looks like ](./Assets/dashboard.png))
 ![Here is what stats page looks like ](./Assets/stats.png)
 
-And here is the link to my deployed app: https://git.heroku.com/sleepy-forest-97884.git
+And here is the link to my deployed app: https://sleepy-forest-97884.herokuapp.com/?id=60f1b644699b1c36a4174372

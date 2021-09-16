@@ -21,7 +21,7 @@ A user wants to be able to create and track their daily workouts. They should be
 - Heroku
 
 ## Usage 
-> **To view my application**: visit deployed [Link](https://git.heroku.com/sleepy-forest-97884.git)
+> **To view my application**: visit deployed [Link](https://sleepy-forest-97884.herokuapp.com/?id=60fb7d0d7ad6770015103a07)
 
 ## Mockup
 ![Here is what the homepage looks like ](./Assets/dashboard.png)
